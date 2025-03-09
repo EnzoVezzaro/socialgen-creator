@@ -28,7 +28,8 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
   
   const [playing, setPlaying] = React.useState(false);
   
-  // Mock video URL - in a real app would come from backend
+  // Get video URL from the content generator
+  // In a real implementation, this would come from the backend
   const videoUrl = "https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
   
   const handlePlay = () => {
