@@ -32,33 +32,45 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
   const [videoGenerated, setVideoGenerated] = useState(false);
   const [videoUrl, setVideoUrl] = useState<string>("");
   
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     setGenerating(true);
-    
-    // Simulate video generation process
-    setTimeout(() => {
-      // In a real implementation, this would be a call to an AI video generation API
-      // We'll simulate it by using a random sample video
-      const randomVideoUrl = [
-        "https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-        "https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-        "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-      ][Math.floor(Math.random() * 3)];
-      
-      setVideoUrl(randomVideoUrl);
-      setGenerating(false);
-      setVideoGenerated(true);
-      setPlaying(true);
-      
-      // Show toast in the appropriate language based on the content
-      if (document.documentElement.lang === "es" || title.includes("Explicado")) {
-        toast.success("¡Video generado con éxito!");
-      } else {
-        toast.success("Video successfully generated!");
-      }
-    }, 2500); // 2.5 second delay to simulate AI video generation
-  };
   
+    try {
+      const response = await fetch('https://text-to-video.p.rapidapi.com/v3/process_text_and_search_media', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-rapidapi-host': 'text-to-video.p.rapidapi.com',
+          'x-rapidapi-key': 'XXX',
+        },
+        body: JSON.stringify({
+          script: script,
+          dimension: "16:9", // Video aspect ratio
+        }),
+      });
+  
+      // Handle the response from the API
+      const data = await response.json();
+      console.log('data: ', data);
+      
+      if (data && data.videoUrl) {
+        setVideoUrl(data.videoUrl); // Assuming the API returns a video URL
+        setGenerating(false);
+        setVideoGenerated(true);
+        setPlaying(true);
+  
+        // Show success message
+        toast.success("Video generated successfully!");
+      } else {
+        throw new Error("No video URL returned");
+      }
+    } catch (error) {
+      setGenerating(false);
+      toast.error("Failed to generate video");
+      console.error("Video generation error:", error);
+    }
+  };
+    
   return (
     <ContentCard
       title="Video Concept"
