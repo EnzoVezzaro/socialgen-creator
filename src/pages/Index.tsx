@@ -14,9 +14,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 import { Instagram, Twitter, Youtube, FileText, FileVideo, RefreshCw } from "lucide-react";
 
-// Add framer-motion as a dependency
-<lov-add-dependency>framer-motion@latest</lov-add-dependency>
-
 const Index = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [content, setContent] = useState<GeneratedContent | null>(null);
