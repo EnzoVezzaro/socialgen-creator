@@ -3,7 +3,7 @@ import React from 'react';
 import { cn } from "@/lib/utils";
 import ContentCard from './ContentCard';
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { Instagram, Twitter, Youtube } from "lucide-react";
+import { Instagram, Twitter, Youtube, Sparkles } from "lucide-react";
 
 interface SocialMediaPreviewProps {
   platform: 'instagram' | 'twitter' | 'youtube';
@@ -42,6 +42,7 @@ const SocialMediaPreview: React.FC<SocialMediaPreviewProps> = ({
   className,
 }) => {
   const config = platformConfig[platform];
+  const isSpanish = text.includes('¡') || text.includes('é') || text.includes('ó');
   
   return (
     <ContentCard
@@ -53,7 +54,7 @@ const SocialMediaPreview: React.FC<SocialMediaPreviewProps> = ({
     >
       <div className="space-y-4">
         {imageUrl && (
-          <div className="overflow-hidden rounded-md border border-border">
+          <div className="overflow-hidden rounded-md border border-border relative group">
             <AspectRatio ratio={config.aspectRatio}>
               <img
                 src={imageUrl}
@@ -62,6 +63,10 @@ const SocialMediaPreview: React.FC<SocialMediaPreviewProps> = ({
                 loading="lazy"
               />
             </AspectRatio>
+            <div className="absolute top-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
+              <Sparkles className="w-3 h-3" />
+              <span>{isSpanish ? "Generado por IA" : "AI Generated"}</span>
+            </div>
           </div>
         )}
         
