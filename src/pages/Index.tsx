@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { motion } from "framer-motion";
 import AnimatedBackground from '../components/AnimatedBackground';
@@ -39,7 +38,6 @@ const Index = () => {
     setContent(null);
   };
 
-  // Animation variants for content cards
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -141,109 +139,113 @@ const Index = () => {
               )}
             </div>
             
-            <ScrollArea className="h-full max-h-[calc(100vh-300px)]">
-              <TabsContent value="all" className="m-0">
-                <motion.div
-                  variants={containerVariants}
-                  initial="hidden"
-                  animate="visible"
-                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-                >
-                  <motion.div variants={itemVariants}>
+            <div className="relative overflow-hidden" style={{ height: 'calc(100vh - 300px)' }}>
+              <ScrollArea className="h-full w-full">
+                <div className="pr-4">
+                  <TabsContent value="all" className="m-0">
+                    <motion.div
+                      variants={containerVariants}
+                      initial="hidden"
+                      animate="visible"
+                      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                    >
+                      <motion.div variants={itemVariants}>
+                        <SocialMediaPreview
+                          platform="instagram"
+                          text={content?.instagram.text || ""}
+                          imageUrl={content?.instagram.imageUrl}
+                          isLoading={isGenerating}
+                        />
+                      </motion.div>
+                      
+                      <motion.div variants={itemVariants}>
+                        <SocialMediaPreview
+                          platform="twitter"
+                          text={content?.twitter.text || ""}
+                          imageUrl={content?.twitter.imageUrl}
+                          isLoading={isGenerating}
+                        />
+                      </motion.div>
+                      
+                      <motion.div variants={itemVariants}>
+                        <SocialMediaPreview
+                          platform="youtube"
+                          text={content?.youtube.title || ""}
+                          imageUrl={content?.youtube.thumbnailUrl}
+                          isLoading={isGenerating}
+                        />
+                      </motion.div>
+                      
+                      <motion.div variants={itemVariants} className="md:col-span-2">
+                        <BlogPreview
+                          title={content?.blog.title || ""}
+                          content={content?.blog.content || ""}
+                          isLoading={isGenerating}
+                        />
+                      </motion.div>
+                      
+                      <motion.div variants={itemVariants}>
+                        <VideoPreview
+                          title={content?.video.title || ""}
+                          script={content?.video.script || ""}
+                          thumbnailUrl={content?.video.thumbnailUrl}
+                          isLoading={isGenerating}
+                        />
+                      </motion.div>
+                    </motion.div>
+                  </TabsContent>
+                  
+                  <TabsContent value="instagram" className="m-0">
                     <SocialMediaPreview
                       platform="instagram"
                       text={content?.instagram.text || ""}
                       imageUrl={content?.instagram.imageUrl}
                       isLoading={isGenerating}
+                      className="max-w-xl mx-auto"
                     />
-                  </motion.div>
+                  </TabsContent>
                   
-                  <motion.div variants={itemVariants}>
+                  <TabsContent value="twitter" className="m-0">
                     <SocialMediaPreview
                       platform="twitter"
                       text={content?.twitter.text || ""}
                       imageUrl={content?.twitter.imageUrl}
                       isLoading={isGenerating}
+                      className="max-w-xl mx-auto"
                     />
-                  </motion.div>
+                  </TabsContent>
                   
-                  <motion.div variants={itemVariants}>
+                  <TabsContent value="youtube" className="m-0">
                     <SocialMediaPreview
                       platform="youtube"
                       text={content?.youtube.title || ""}
                       imageUrl={content?.youtube.thumbnailUrl}
                       isLoading={isGenerating}
+                      className="max-w-xl mx-auto"
                     />
-                  </motion.div>
+                  </TabsContent>
                   
-                  <motion.div variants={itemVariants} className="md:col-span-2">
+                  <TabsContent value="blog" className="m-0">
                     <BlogPreview
                       title={content?.blog.title || ""}
                       content={content?.blog.content || ""}
                       isLoading={isGenerating}
+                      className="max-w-3xl mx-auto"
                     />
-                  </motion.div>
+                  </TabsContent>
                   
-                  <motion.div variants={itemVariants}>
+                  <TabsContent value="video" className="m-0">
                     <VideoPreview
                       title={content?.video.title || ""}
                       script={content?.video.script || ""}
                       thumbnailUrl={content?.video.thumbnailUrl}
                       isLoading={isGenerating}
+                      className="max-w-xl mx-auto"
                     />
-                  </motion.div>
-                </motion.div>
-              </TabsContent>
-              
-              <TabsContent value="instagram" className="m-0">
-                <SocialMediaPreview
-                  platform="instagram"
-                  text={content?.instagram.text || ""}
-                  imageUrl={content?.instagram.imageUrl}
-                  isLoading={isGenerating}
-                  className="max-w-xl mx-auto"
-                />
-              </TabsContent>
-              
-              <TabsContent value="twitter" className="m-0">
-                <SocialMediaPreview
-                  platform="twitter"
-                  text={content?.twitter.text || ""}
-                  imageUrl={content?.twitter.imageUrl}
-                  isLoading={isGenerating}
-                  className="max-w-xl mx-auto"
-                />
-              </TabsContent>
-              
-              <TabsContent value="youtube" className="m-0">
-                <SocialMediaPreview
-                  platform="youtube"
-                  text={content?.youtube.title || ""}
-                  imageUrl={content?.youtube.thumbnailUrl}
-                  isLoading={isGenerating}
-                  className="max-w-xl mx-auto"
-                />
-              </TabsContent>
-              
-              <TabsContent value="blog" className="m-0">
-                <BlogPreview
-                  title={content?.blog.title || ""}
-                  content={content?.blog.content || ""}
-                  isLoading={isGenerating}
-                  className="max-w-3xl mx-auto"
-                />
-              </TabsContent>
-              
-              <TabsContent value="video" className="m-0">
-                <VideoPreview
-                  title={content?.video.title || ""}
-                  script={content?.video.script || ""}
-                  thumbnailUrl={content?.video.thumbnailUrl}
-                  isLoading={isGenerating}
-                  className="max-w-xl mx-auto"
-                />
-              </TabsContent>
-            </ScrollArea>
+                  </TabsContent>
+                </div>
+              </ScrollArea>
+            </div>
           </Tabs>
         )}
         

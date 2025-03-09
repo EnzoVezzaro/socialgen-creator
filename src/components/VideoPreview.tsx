@@ -2,8 +2,9 @@
 import React from 'react';
 import { cn } from "@/lib/utils";
 import ContentCard from './ContentCard';
-import { FileVideo } from "lucide-react";
+import { FileVideo, Play } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
 
 interface VideoPreviewProps {
   title: string;
@@ -25,6 +26,15 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
     ? script.substring(0, 300) + '...'
     : script;
   
+  const [playing, setPlaying] = React.useState(false);
+  
+  // Mock video URL - in a real app would come from backend
+  const videoUrl = "https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
+  
+  const handlePlay = () => {
+    setPlaying(true);
+  };
+  
   return (
     <ContentCard
       title="Video Concept"
@@ -34,13 +44,33 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
       className={className}
     >
       <div className="space-y-4">
-        {thumbnailUrl && (
-          <div className="overflow-hidden rounded-md border border-border">
+        {!playing && thumbnailUrl && (
+          <div className="relative overflow-hidden rounded-md border border-border group">
             <img
               src={thumbnailUrl}
               alt="Video thumbnail preview"
-              className="w-full aspect-video object-cover transition-transform duration-500 hover:scale-105"
+              className="w-full aspect-video object-cover transition-transform duration-500 group-hover:scale-105"
               loading="lazy"
+            />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Button 
+                onClick={handlePlay} 
+                size="icon" 
+                className="bg-black/70 hover:bg-black/90 text-white rounded-full w-12 h-12"
+              >
+                <Play className="w-5 h-5" />
+              </Button>
+            </div>
+          </div>
+        )}
+        
+        {playing && (
+          <div className="overflow-hidden rounded-md border border-border">
+            <video
+              className="w-full aspect-video"
+              controls
+              autoPlay
+              src={videoUrl}
             />
           </div>
         )}
