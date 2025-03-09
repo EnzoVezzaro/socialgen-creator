@@ -1,10 +1,11 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { cn } from "@/lib/utils";
 import ContentCard from './ContentCard';
-import { FileVideo, Play } from "lucide-react";
+import { FileVideo, Play, Wand2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 interface VideoPreviewProps {
   title: string;
@@ -26,7 +27,9 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
     ? script.substring(0, 300) + '...'
     : script;
   
-  const [playing, setPlaying] = React.useState(false);
+  const [playing, setPlaying] = useState(false);
+  const [generating, setGenerating] = useState(false);
+  const [videoGenerated, setVideoGenerated] = useState(false);
   
   // Get video URL from the content generator
   // In a real implementation, this would come from the backend
@@ -34,6 +37,18 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
   
   const handlePlay = () => {
     setPlaying(true);
+  };
+  
+  const handleGenerate = () => {
+    setGenerating(true);
+    
+    // Simulate video generation process
+    setTimeout(() => {
+      setGenerating(false);
+      setVideoGenerated(true);
+      setPlaying(true);
+      toast.success("¡Video generado con éxito!");
+    }, 2000);
   };
   
   return (
@@ -45,7 +60,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
       className={className}
     >
       <div className="space-y-4">
-        {!playing && thumbnailUrl && (
+        {!playing && thumbnailUrl && !videoGenerated && (
           <div className="relative overflow-hidden rounded-md border border-border group">
             <img
               src={thumbnailUrl}
@@ -55,17 +70,27 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
             />
             <div className="absolute inset-0 flex items-center justify-center">
               <Button 
-                onClick={handlePlay} 
-                size="icon" 
-                className="bg-black/70 hover:bg-black/90 text-white rounded-full w-12 h-12"
+                onClick={handleGenerate}
+                className="bg-black/70 hover:bg-black/90 text-white rounded-md gap-2"
+                disabled={generating}
               >
-                <Play className="w-5 h-5" />
+                {generating ? (
+                  <>
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                    Generando...
+                  </>
+                ) : (
+                  <>
+                    <Wand2 className="w-4 h-4" />
+                    Generar Video con IA
+                  </>
+                )}
               </Button>
             </div>
           </div>
         )}
         
-        {playing && (
+        {playing && videoGenerated && (
           <div className="overflow-hidden rounded-md border border-border">
             <video
               className="w-full aspect-video"
@@ -79,19 +104,19 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
         <div>
           <h3 className="font-medium">{title}</h3>
           <p className="text-xs text-muted-foreground mt-1">
-            Estimated duration: 3-5 minutes
+            Duración estimada: 3-5 minutos
           </p>
         </div>
         
         <Separator />
         
         <div className="space-y-2">
-          <p className="text-xs font-medium text-foreground">Script Preview:</p>
+          <p className="text-xs font-medium text-foreground">Previsualización del guión:</p>
           <p className="text-xs text-muted-foreground">{truncatedScript}</p>
           
           {script.length > 300 && (
             <p className="text-xs text-muted-foreground italic">
-              Full script available when copied or downloaded
+              Guión completo disponible cuando se copia o descarga
             </p>
           )}
         </div>
