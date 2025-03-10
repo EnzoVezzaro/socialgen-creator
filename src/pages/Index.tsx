@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from "framer-motion";
 import AnimatedBackground from '../components/AnimatedBackground';
 import PromptInput from '../components/PromptInput';
@@ -11,19 +11,34 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
-import { Instagram, Twitter, Youtube, FileText, FileVideo, RefreshCw } from "lucide-react";
+import { Instagram, Twitter, Youtube, FileText, FileVideo, RefreshCw, Settings } from "lucide-react";
 
 const Index = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [content, setContent] = useState<GeneratedContent | null>(null);
   const [activeTab, setActiveTab] = useState("all");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [apiKey, setApiKey] = useState<string | null>(localStorage.getItem('apiKey'));
+
+  useEffect(() => {
+    const apiKey = localStorage.getItem('apiKey');
+    if (!apiKey) {
+      setIsModalOpen(true);
+    }
+  }, []);
+
+  const handleApiKeyChange = (newApiKey: string) => {
+    setApiKey(newApiKey);
+    localStorage.setItem('apiKey', newApiKey);
+    setIsModalOpen(false);
+  };
 
   const handleGenerate = async (prompt: string) => {
     setIsGenerating(true);
     setContent(null);
     
     try {
-      const generatedContent = await generateContent(prompt);
+      const generatedContent = await generateContent(prompt, apiKey); 
       setContent(generatedContent);
       toast.success("Content generated successfully!");
     } catch (error) {
@@ -252,11 +267,47 @@ const Index = () => {
         <footer className="mt-auto pt-8">
           <Separator className="mb-6" />
           <div className="text-center text-xs text-muted-foreground">
-            <p>Content Creator &copy; {new Date().getFullYear()}</p>
+            <p><a href="https://www.enzovezzaro.com/" target="_blank" rel="noopener noreferrer">Enzo Vezzaro</a> ❤️ {new Date().getFullYear()}</p>
             <p className="mt-1">A minimalist content generation application</p>
           </div>
         </footer>
       </div>
+
+      {/* Gear Icon Button */}
+      <button
+        onClick={() => setIsModalOpen(true)}
+        className="absolute top-4 right-4 bg-white p-2 rounded-full shadow-lg hover:bg-gray-200"
+      >
+        <Settings className="w-6 h-6 text-gray-700" />
+      </button>
+
+      {/* API Key Popup */}
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+            className="bg-white p-6 rounded-lg shadow-lg w-80"
+          >
+            <h3 className="text-xl font-bold mb-4">Enter API Key</h3>
+            <p className="text-sm text-muted-foreground mb-4">Sign up at <a className="text-blue-500 hover:underline" href="https://aihorde.net/" target="_blank" rel="noopener noreferrer">AI Horde</a>, get your API key from your dashboard, and paste it into the app to start using it.</p>
+            <input
+              type="text"
+              placeholder="API Key"
+              className="w-full p-2 border rounded-md mb-4"
+              onChange={(e) => setApiKey(e.target.value)}
+              value={apiKey || ''}
+            />
+            <Button
+              onClick={() => handleApiKeyChange(apiKey || '')}
+              className="w-full"
+            >
+              Save API Key
+            </Button>
+          </motion.div>
+        </div>
+      )}
     </>
   );
 };
